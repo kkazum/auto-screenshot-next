@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { TableContainer, Table, Paper, Typography, Box, Popover, MenuItem } from '@mui/material';
 import { useRowSelect } from '../../../../lib/hooks/useRowSelect';
+import { getSettingById } from '../../../../lib/functions/getSettingById';
 import { HeadCell, SelectableTableHead } from './SelectableTableHead';
 import { SettingLIstTableBody } from './SettingLIstTableBody';
 import { SettingListType } from '../../NewDetailSettingArea';
@@ -9,6 +10,7 @@ import { DispatchContext } from '../../../../lib/context';
 import { DELETE_MESSAGE } from '../../../../lib/messages';
 import { actions } from '../../../../lib/context/reducer';
 import { asyncLocalStorage } from '../../../../lib/asyncLocalStorage';
+
 const headCells: HeadCell[] = [
   {
     id: 'id',
@@ -32,6 +34,7 @@ export type Setting = SettingListType[number];
 
 export const SettingListTable: React.VFC = () => {
   const [settingList, setSettingList] = useState<SettingListType | null>(null);
+
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [currentItemId, setCurrentItemId] = useState<string | null>(null);
   const dispatch = useContext(DispatchContext);
@@ -58,6 +61,13 @@ export const SettingListTable: React.VFC = () => {
   };
 
   const goToDetailPage = () => router.push(`/settings/${currentItemId}`);
+
+  const onClickScreenshotButton = async () => {
+    if (!settingList || !currentItemId) return;
+    // TODO: getSettingByIdのundefinedチェックする
+    const buffers: string[] = await window.myAPI.passInfo(getSettingById(settingList, currentItemId));
+    console.log(buffers);
+  };
 
   useEffect(() => {
     getItem('settings').then((list) => {
@@ -98,7 +108,7 @@ export const SettingListTable: React.VFC = () => {
           >
             <Box width={200} my={1}>
               <MenuItem onClick={goToDetailPage}>詳細</MenuItem>
-              <MenuItem onClick={() => {}}>撮影</MenuItem>
+              <MenuItem onClick={onClickScreenshotButton}>撮影</MenuItem>
             </Box>
           </Popover>
         </>
