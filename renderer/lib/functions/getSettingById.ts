@@ -1,9 +1,6 @@
-import { SettingListType } from "../../components/settings/NewDetailSettingArea";
+import { SettingListType } from '../../components/settings/NewDetailSettingArea';
 
-export const getSettingById = (
-  settingList: SettingListType,
-  settingId: string
-) => {
+export const getSettingById = (settingList: SettingListType, settingId: string) => {
   const result = settingList.find(({ id }) => id === settingId);
   return {
     name: result?.setting.name,

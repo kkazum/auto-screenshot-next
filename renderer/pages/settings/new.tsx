@@ -1,6 +1,6 @@
-import { Layout } from "../../components/shared/Layout";
-import { NextPage } from "next";
-import { NewDetailSettingTemplate } from "../../components/settings/NewDetailSettingTemplate";
+import { Layout } from '../../components/shared/Layout';
+import { NextPage } from 'next';
+import { NewDetailSettingTemplate } from '../../components/settings/NewDetailSettingTemplate';
 
 const NewPage: NextPage = () => {
   return (

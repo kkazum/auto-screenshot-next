@@ -1,5 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React from 'react';
+import { useState } from 'react';
 
 export const useRowSelect = (
   rowIds: string[],
@@ -13,20 +13,14 @@ export const useRowSelect = (
   toggleSelectedAll: () => void;
   setSelectedRowIds: React.Dispatch<React.SetStateAction<string[]>>;
 } => {
-  const [selectedRowIds, setSelectedRowIds] = useState<string[]>(
-    initialSelectedRowIds
-  );
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>(initialSelectedRowIds);
   const isSelected = (rowId: string) => selectedRowIds.includes(rowId);
-  const isSelectedAll =
-    rowIds.length > 0 && selectedRowIds.length === rowIds.length;
-  const isIndeterminate =
-    selectedRowIds.length > 0 && selectedRowIds.length < rowIds.length;
+  const isSelectedAll = rowIds.length > 0 && selectedRowIds.length === rowIds.length;
+  const isIndeterminate = selectedRowIds.length > 0 && selectedRowIds.length < rowIds.length;
 
   const toggleSelected = (rowId: string) => {
     isSelected(rowId)
-      ? setSelectedRowIds(
-          selectedRowIds.filter((selectedId) => selectedId !== rowId)
-        )
+      ? setSelectedRowIds(selectedRowIds.filter((selectedId) => selectedId !== rowId))
       : setSelectedRowIds([...selectedRowIds, rowId]);
   };
   const toggleSelectedAll = () => {

@@ -1,12 +1,6 @@
-import { useState } from "react";
-import {
-  Checkbox,
-  TableCell,
-  TableHead,
-  TableRow,
-  Button,
-} from "@mui/material";
-import { DeleteDialog } from "../../../shared/DeleteDialog";
+import { useState } from 'react';
+import { Checkbox, TableCell, TableHead, TableRow, Button } from '@mui/material';
+import { DeleteDialog } from '../../../shared/DeleteDialog';
 
 export type HeadCell = {
   id: string;
@@ -39,30 +33,24 @@ export const SelectableTableHead: React.VFC<SelectableTableHeadProps> = ({
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={indeterminate}
-            checked={checked}
-            onChange={onSelectAllClick}
-          />
+          <Checkbox indeterminate={indeterminate} checked={checked} onChange={onSelectAllClick} />
         </TableCell>
         {!!selectedRowIds.length ? (
           <>
             <TableCell>
-              <Button onClick={() => setIsDeleteDialogOpen(true)}>
-                削除する
-              </Button>
+              <Button onClick={() => setIsDeleteDialogOpen(true)}>削除する</Button>
             </TableCell>
             <DeleteDialog
               open={isDeleteDialogOpen}
               handleClose={() => setIsDeleteDialogOpen(false)}
               handleDelete={deleteItems}
-              target={"選択した項目"}
+              target={'選択した項目'}
             />
           </>
         ) : (
           <>
             {headCells.map((headCell) => (
-              <TableCell key={headCell.id} padding={"normal"}>
+              <TableCell key={headCell.id} padding={'normal'}>
                 {headCell.label}
               </TableCell>
             ))}

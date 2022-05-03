@@ -1,7 +1,7 @@
-import React, { ReactNode, useReducer, useContext } from "react";
-import { reducer, initialState, actions } from "../../lib/context/reducer";
-import { StSnackbar } from "../shared/Snackbar";
-import { StoreContext, DispatchContext } from "../../lib/context";
+import React, { ReactNode, useReducer, useContext } from 'react';
+import { reducer, initialState, actions } from '../../lib/context/reducer';
+import { StSnackbar } from '../shared/Snackbar';
+import { StoreContext, DispatchContext } from '../../lib/context';
 
 type Props = {
   children: ReactNode;
@@ -27,7 +27,7 @@ const Snackbar: React.VFC = () => {
   return (
     <StSnackbar
       open={!!snackbar?.visible}
-      message={snackbar?.message || ""}
+      message={snackbar?.message || ''}
       handleClose={() => dispatch(actions.hideSnackbar())}
       error={snackbar?.error}
     />

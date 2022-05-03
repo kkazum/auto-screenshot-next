@@ -1,13 +1,7 @@
-import React from "react";
-import {
-  TableBody,
-  TableRow,
-  TableCell,
-  Checkbox,
-  IconButton,
-} from "@mui/material";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { SettingListType } from "../../NewDetailSettingArea";
+import React from 'react';
+import { TableBody, TableRow, TableCell, Checkbox, IconButton } from '@mui/material';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { SettingListType } from '../../NewDetailSettingArea';
 
 type TableBodyProps = {
   rows: SettingListType;
@@ -24,10 +18,7 @@ export const SettingLIstTableBody: React.VFC<TableBodyProps> = ({
   setAnchorEl,
   setCurrentItemId,
 }) => {
-  const onClickIcon = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    id: string
-  ) => {
+  const onClickIcon = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
     e.stopPropagation();
     setCurrentItemId(id);
     setAnchorEl(e.currentTarget);
@@ -54,9 +45,9 @@ export const SettingLIstTableBody: React.VFC<TableBodyProps> = ({
             </TableCell>
             <TableCell>{name}</TableCell>
             <TableCell>{url}</TableCell>
-            <TableCell>{size.map(({ px }) => `${px}px`).join("、")}</TableCell>
+            <TableCell>{size.map(({ px }) => `${px}px`).join('、')}</TableCell>
             <TableCell>
-              <IconButton onClick={(e) => onClickIcon(e, id)} size={"small"}>
+              <IconButton onClick={(e) => onClickIcon(e, id)} size={'small'}>
                 <MoreHorizIcon />
               </IconButton>
             </TableCell>

@@ -1,8 +1,8 @@
-import { CreatorsToActions } from "../types/CreatorsToActions";
+import { CreatorsToActions } from '../types/CreatorsToActions';
 
 const actionTypes = {
-  SHOW_SNACKBAR: "SHOW_SNACKBAR",
-  HIDE_SNACKBAR: "HIDE_SNACKBAR",
+  SHOW_SNACKBAR: 'SHOW_SNACKBAR',
+  HIDE_SNACKBAR: 'HIDE_SNACKBAR',
 } as const;
 
 type SnackBarState = {
@@ -58,7 +58,7 @@ export const reducer = (state: RootState, action: Actions) => {
         ...state,
         snackbar: {
           visible: false,
-          message: "",
+          message: '',
           erroe: false,
         },
       };

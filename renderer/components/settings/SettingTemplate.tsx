@@ -1,3 +1,3 @@
-import { SettingArea } from "../../components/settings/SettingArea";
+import { SettingArea } from '../../components/settings/SettingArea';
 
 export const SettingTemplate: React.VFC = () => <SettingArea />;
