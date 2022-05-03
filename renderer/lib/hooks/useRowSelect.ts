@@ -1,25 +1,32 @@
-import { useState } from 'react';
+import React from "react";
+import { useState } from "react";
 
 export const useRowSelect = (
-  rowIds: number[],
-  initialSelectedRowIds: number[] = []
+  rowIds: string[],
+  initialSelectedRowIds: string[] = []
 ): {
-  selectedRowIds: number[];
-  isSelected: (rowId: number) => boolean;
+  selectedRowIds: string[];
+  isSelected: (rowId: string) => boolean;
   isSelectedAll: boolean;
   isIndeterminate: boolean;
-  toggleSelected: (id: number) => void;
+  toggleSelected: (id: string) => void;
   toggleSelectedAll: () => void;
+  setSelectedRowIds: React.Dispatch<React.SetStateAction<string[]>>;
 } => {
-  const [selectedRowIds, setSelectedRowIds] = useState<number[]>(initialSelectedRowIds);
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>(
+    initialSelectedRowIds
+  );
+  const isSelected = (rowId: string) => selectedRowIds.includes(rowId);
+  const isSelectedAll =
+    rowIds.length > 0 && selectedRowIds.length === rowIds.length;
+  const isIndeterminate =
+    selectedRowIds.length > 0 && selectedRowIds.length < rowIds.length;
 
-  const isSelected = (rowId: number) => selectedRowIds.includes(rowId);
-  const isSelectedAll = rowIds.length > 0 && selectedRowIds.length === rowIds.length;
-  const isIndeterminate = selectedRowIds.length > 0 && selectedRowIds.length < rowIds.length;
-
-  const toggleSelected = (rowId: number) => {
+  const toggleSelected = (rowId: string) => {
     isSelected(rowId)
-      ? setSelectedRowIds(selectedRowIds.filter((selectedId) => selectedId !== rowId))
+      ? setSelectedRowIds(
+          selectedRowIds.filter((selectedId) => selectedId !== rowId)
+        )
       : setSelectedRowIds([...selectedRowIds, rowId]);
   };
   const toggleSelectedAll = () => {
@@ -33,5 +40,6 @@ export const useRowSelect = (
     isIndeterminate,
     toggleSelected,
     toggleSelectedAll,
+    setSelectedRowIds,
   };
 };

@@ -1,88 +1,112 @@
-import { TableContainer, Table, Paper, Typography, Box } from '@mui/material';
+import React, { useState, useEffect, useContext } from 'react';
+import { TableContainer, Table, Paper, Typography, Box, Popover, MenuItem } from '@mui/material';
 import { useRowSelect } from '../../../../lib/hooks/useRowSelect';
 import { HeadCell, SelectableTableHead } from './SelectableTableHead';
 import { SettingLIstTableBody } from './SettingLIstTableBody';
-
+import { SettingListType } from '../../NewDetailSettingArea';
+import { useRouter } from 'next/router';
+import { DispatchContext } from '../../../../lib/context';
+import { DELETE_MESSAGE } from '../../../../lib/messages';
+import { actions } from '../../../../lib/context/reducer';
+import { asyncLocalStorage } from '../../../../lib/asyncLocalStorage';
 const headCells: HeadCell[] = [
   {
-    id: 'name',
-    label: 'Dessert (100g serving)',
+    id: 'id',
+    label: 'Unique Id',
   },
   {
-    id: 'calories',
-    label: 'Calories',
+    id: 'url',
+    label: 'URL',
   },
   {
-    id: 'fat',
-    label: 'Fat (g)',
+    id: 'size',
+    label: 'px',
   },
   {
-    id: 'carbs',
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    label: 'Protein (g)',
+    id: 'actions',
+    label: '詳細/撮影',
   },
 ];
 
-export type Data = {
-  id: number;
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
-};
-
-const createData = (id: number, name: string, calories: number, fat: number, carbs: number, protein: number): Data => {
-  return {
-    id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-};
-
-const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
-];
+export type Setting = SettingListType[number];
 
 export const SettingListTable: React.VFC = () => {
-  const { selectedRowIds, isSelected, isSelectedAll, isIndeterminate, toggleSelected, toggleSelectedAll } =
-    useRowSelect(rows.map((row) => row.id));
+  const [settingList, setSettingList] = useState<SettingListType | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [currentItemId, setCurrentItemId] = useState<string | null>(null);
+  const dispatch = useContext(DispatchContext);
+  const { getItem, setItem } = asyncLocalStorage;
+  const router = useRouter();
+  const {
+    selectedRowIds,
+    isSelected,
+    isSelectedAll,
+    isIndeterminate,
+    toggleSelected,
+    toggleSelectedAll,
+    setSelectedRowIds,
+  } = useRowSelect(!!settingList ? settingList.map((list) => list.id) : []);
+
+  const handleDelete = (selectedRowIds: string[]) => {
+    if (!settingList || !selectedRowIds.length) return;
+    const filteredSettingList = settingList.filter((setting) => !selectedRowIds.includes(setting.id));
+    setItem('settings', JSON.stringify(filteredSettingList)).then(() => {
+      setSettingList(filteredSettingList);
+      setSelectedRowIds([]);
+      dispatch(actions.showSnackbar(DELETE_MESSAGE));
+    });
+  };
+
+  const goToDetailPage = () => router.push(`/settings/${currentItemId}`);
+
+  useEffect(() => {
+    getItem('settings').then((list) => {
+      setSettingList(list ? JSON.parse(list) : null);
+    });
+  }, []);
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table>
-          <SelectableTableHead
-            onSelectAllClick={toggleSelectedAll}
-            headCells={headCells}
-            checked={isSelectedAll}
-            indeterminate={isIndeterminate}
-          />
-          <SettingLIstTableBody rows={rows} isSelected={isSelected} toggleSelected={toggleSelected} />
-        </Table>
-      </TableContainer>
-      <Box sx={{ py: 2 }}>
-        <Typography variant="h5">selectedRowIds</Typography>
-        <Typography>{JSON.stringify(selectedRowIds)}</Typography>
-      </Box>
+      {!!settingList?.length ? (
+        <>
+          <TableContainer component={Paper}>
+            <Table>
+              <SelectableTableHead
+                onSelectAllClick={toggleSelectedAll}
+                headCells={headCells}
+                checked={isSelectedAll}
+                indeterminate={isIndeterminate}
+                selectedRowIds={selectedRowIds}
+                handleDelete={handleDelete}
+              />
+              <SettingLIstTableBody
+                rows={settingList}
+                isSelected={isSelected}
+                toggleSelected={toggleSelected}
+                setAnchorEl={setAnchorEl}
+                setCurrentItemId={setCurrentItemId}
+              />
+            </Table>
+          </TableContainer>
+          <Popover
+            elevation={2}
+            open={!!anchorEl}
+            anchorEl={anchorEl}
+            onClose={() => setAnchorEl(null)}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Box width={200} my={1}>
+              <MenuItem onClick={goToDetailPage}>詳細</MenuItem>
+              <MenuItem onClick={() => {}}>撮影</MenuItem>
+            </Box>
+          </Popover>
+        </>
+      ) : (
+        <Box sx={{ py: 2 }}>
+          <Typography variant="h5">まだ撮影設定がありません。</Typography>
+        </Box>
+      )}
     </>
   );
 };
