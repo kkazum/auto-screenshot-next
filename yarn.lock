@@ -268,6 +268,13 @@
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
+"@mui/icons-material@^5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.6.2.tgz#239c40fc5841dc7c6af7d00e4e988550de170fcd"
+  integrity sha512-9QdI7axKuBAyaGz4mtdi7Uy1j73/thqFmEuxpJHxNC7O8ADEK1Da3t2veK2tgmsXsUlAHcAG63gg+GvWWeQNqQ==
+  dependencies:
+    "@babel/runtime" "^7.17.2"
+
 "@mui/material@^5.6.3":
   version "5.6.3"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-5.6.3.tgz#a5b6cd1b0417fca67a65172530ff5573ab7bc453"
@@ -3012,6 +3019,11 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
+react-hook-form@^7.30.0:
+  version "7.30.0"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.30.0.tgz#c9e2fd54d3627e43bd94bf38ef549df2e80c1371"
+  integrity sha512-DzjiM6o2vtDGNMB9I4yCqW8J21P314SboNG1O0obROkbg7KVS0I7bMtwSdKyapnCPjHgnxc3L7E5PEdISeEUcQ==
+
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -3587,6 +3599,11 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
+
+uuidjs@^4.2.11:
+  version "4.2.11"
+  resolved "https://registry.yarnpkg.com/uuidjs/-/uuidjs-4.2.11.tgz#1c975d113277cdc4f140565cb1853218bf3764cb"
+  integrity sha512-uSd98rMEeoOEfCFphspo8f9N6eyrLv4Qhew56XciomGemP4uOYZ/fLZUPpnlJklVSsAV2S6Hd5p2XzF/ub5kxA==
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"
