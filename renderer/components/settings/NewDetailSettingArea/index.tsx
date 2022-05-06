@@ -66,7 +66,21 @@ export const NewDetailSettingArea: React.VFC<{ settingId?: string }> = ({ settin
     });
   };
 
-  const requireRules = { required: REQUIRED_VALIDATION_MESSAGE };
+  const nameValidationRule = { required: REQUIRED_VALIDATION_MESSAGE };
+  const urlValidationRule = {
+    required: REQUIRED_VALIDATION_MESSAGE,
+    pattern: {
+      value: /^https?:\/\/[\w!?/+\-_~;.,*&@#$%()'[\]]+$/,
+      message: 'URLのフォーマットで入力してください',
+    },
+  };
+  const sizeValidationRule = {
+    required: REQUIRED_VALIDATION_MESSAGE,
+    min: {
+      value: 320,
+      message: '320以上の数字を入力してください。',
+    },
+  };
 
   useEffect(() => {
     // 初回レンダリング時にstorageからデータを呼び出す
@@ -79,8 +93,8 @@ export const NewDetailSettingArea: React.VFC<{ settingId?: string }> = ({ settin
     if (!settingId || !settingList) return;
     if (!getSettingById(settingList, settingId)) {
       // 存在しないIdで詳細ページに入った場合はリダイレクトする
-      router.push('/');
       dispatch(actions.showSnackbar(NO_ITEM_MESSAGE));
+      router.push('/');
     } else {
       // editの際にformに初期値を入れる
       reset(getSettingById(settingList, settingId));
@@ -98,7 +112,7 @@ export const NewDetailSettingArea: React.VFC<{ settingId?: string }> = ({ settin
         errorMessage={errors?.name?.message}
         control={control}
         name={'name'}
-        rules={requireRules}
+        rules={nameValidationRule}
       />
       <FormTextField
         label={'撮影先URL'}
@@ -106,7 +120,7 @@ export const NewDetailSettingArea: React.VFC<{ settingId?: string }> = ({ settin
         errorMessage={errors?.url?.message}
         control={control}
         name={'url'}
-        rules={requireRules}
+        rules={urlValidationRule}
       />
       {fields.map((field, index) => (
         <>
@@ -118,7 +132,7 @@ export const NewDetailSettingArea: React.VFC<{ settingId?: string }> = ({ settin
             control={control}
             name={`size.${index}.px`}
             type={'number'}
-            rules={requireRules}
+            rules={sizeValidationRule}
           />
           {fields.length > 1 && (
             <Button>

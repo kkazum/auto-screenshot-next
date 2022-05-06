@@ -29,15 +29,18 @@ export const SelectableTableHead: React.VFC<SelectableTableHeadProps> = ({
     handleDelete(selectedRowIds);
     setIsDeleteDialogOpen(false);
   };
+
+  const isSelectedRowIdsNotEmpty = !!selectedRowIds.length;
+
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        <TableCell padding="checkbox" sx={{ ...(isSelectedRowIdsNotEmpty && { border: 'none' }) }}>
           <Checkbox indeterminate={indeterminate} checked={checked} onChange={onSelectAllClick} />
         </TableCell>
-        {!!selectedRowIds.length ? (
+        {isSelectedRowIdsNotEmpty ? (
           <>
-            <TableCell>
+            <TableCell sx={{ border: 'none' }}>
               <Button onClick={() => setIsDeleteDialogOpen(true)}>削除する</Button>
             </TableCell>
             <DeleteDialog
