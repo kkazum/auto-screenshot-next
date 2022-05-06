@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { TableContainer, Table, Paper, Typography, Box, Popover, MenuItem } from '@mui/material';
+import { TableContainer, Table, Paper, Typography, Box, Popover, MenuItem, Button } from '@mui/material';
 import { useRowSelect } from '../../../../lib/hooks/useRowSelect';
 import { getSettingById } from '../../../../lib/functions/getSettingById';
 import { HeadCell, SelectableTableHead } from './SelectableTableHead';
@@ -7,14 +7,15 @@ import { SettingLIstTableBody } from './SettingLIstTableBody';
 import { SettingListType } from '../../NewDetailSettingArea';
 import { useRouter } from 'next/router';
 import { DispatchContext } from '../../../../lib/context';
-import { DELETE_MESSAGE } from '../../../../lib/messages';
+import { DELETE_MESSAGE, GENERAL_ERROR_MESSAGE, SUCCESS_SCREEN_SHOT_MESSAGE } from '../../../../lib/messages';
 import { actions } from '../../../../lib/context/reducer';
 import { asyncLocalStorage } from '../../../../lib/asyncLocalStorage';
+import { ImageInfo } from '../../../../lib/types/ImageInfo';
 
 const headCells: HeadCell[] = [
   {
-    id: 'id',
-    label: 'Unique Id',
+    id: 'name',
+    label: 'name',
   },
   {
     id: 'url',
@@ -30,16 +31,19 @@ const headCells: HeadCell[] = [
   },
 ];
 
-export type Setting = SettingListType[number];
+type SettingListTable = {
+  setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>;
+  setImageInfo: React.Dispatch<React.SetStateAction<ImageInfo | null>>;
+};
 
-export const SettingListTable: React.VFC = () => {
+export const SettingListTable: React.VFC<SettingListTable> = ({ setIsProcessing, setImageInfo }) => {
   const [settingList, setSettingList] = useState<SettingListType | null>(null);
-
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [currentItemId, setCurrentItemId] = useState<string | null>(null);
   const dispatch = useContext(DispatchContext);
   const { getItem, setItem } = asyncLocalStorage;
   const router = useRouter();
+
   const {
     selectedRowIds,
     isSelected,
@@ -60,13 +64,36 @@ export const SettingListTable: React.VFC = () => {
     });
   };
 
-  const goToDetailPage = () => router.push(`/settings/${currentItemId}`);
+  const goToNewPage = () => {
+    setAnchorEl(null);
+    router.push('/settings/new');
+  };
 
-  const onClickScreenshotButton = async () => {
+  const goToDetailPage = () => {
+    router.push(`/settings/${currentItemId}`);
+  };
+
+  const onClickScreenshotButton = () => {
     if (!settingList || !currentItemId) return;
+    setIsProcessing(true);
+    setAnchorEl(null);
     // TODO: getSettingByIdのundefinedチェックする
-    const buffers: string[] = await window.myAPI.passInfo(getSettingById(settingList, currentItemId));
-    console.log(buffers);
+    window.myAPI
+      .passInfo(getSettingById(settingList, currentItemId))
+      .then((data) => {
+        if (!!data.length) {
+          dispatch(actions.showSnackbar(SUCCESS_SCREEN_SHOT_MESSAGE));
+          setImageInfo(data);
+        } else {
+          dispatch(actions.showSnackbar(GENERAL_ERROR_MESSAGE, true));
+        }
+      })
+      // .catch((error) => {
+      //   dispatch(actions.showSnackbar(GENERAL_ERROR_MESSAGE, true));
+      // })
+      .finally(() => {
+        setIsProcessing(false);
+      });
   };
 
   useEffect(() => {
@@ -77,8 +104,9 @@ export const SettingListTable: React.VFC = () => {
 
   return (
     <>
+      <Button onClick={() => goToNewPage()}>新規条件作成</Button>
       {!!settingList?.length ? (
-        <>
+        <Box>
           <TableContainer component={Paper}>
             <Table>
               <SelectableTableHead
@@ -111,11 +139,9 @@ export const SettingListTable: React.VFC = () => {
               <MenuItem onClick={onClickScreenshotButton}>撮影</MenuItem>
             </Box>
           </Popover>
-        </>
-      ) : (
-        <Box sx={{ py: 2 }}>
-          <Typography variant="h5">まだ撮影設定がありません。</Typography>
         </Box>
+      ) : (
+        <Typography variant="h5">まだ撮影設定がありません。</Typography>
       )}
     </>
   );

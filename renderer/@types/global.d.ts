@@ -4,5 +4,5 @@ declare global {
   }
 }
 export interface myAPI {
-  passInfo: (list: Object) => Promise<string[]>;
+  passInfo: (list: Object) => Promise<{ image: string; px: string; url: string }[]>;
 }

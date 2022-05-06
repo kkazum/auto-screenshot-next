@@ -9,17 +9,41 @@ import prepareNext from 'electron-next';
 import { Cluster } from 'puppeteer-cluster';
 import puppeteer from 'puppeteer';
 import { SettingListType } from '../renderer/components/settings/NewDetailSettingArea';
+import { ImageInfo } from '../renderer/lib/types/ImageInfo';
 
 app.on('ready', async () => {
   await prepareNext('./renderer');
   const mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1440,
     height: 800,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: join(__dirname, 'preload.js'),
     },
+  });
+
+  mainWindow.webContents.session.on('will-download', (event, item, webContents) => {
+    item.setSavePath(`${app.getPath('downloads')}/${item.getFilename()}`);
+    item.on('updated', (event, state) => {
+      if (state === 'interrupted') {
+        console.log('Download is interrupted but can be resumed');
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          console.log('Download is paused');
+        } else {
+          console.log(`Received bytes: ${item.getReceivedBytes()}`);
+        }
+      }
+    });
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        console.log('Download successfully');
+      } else {
+        console.log(item.getSavePath());
+        console.log(`Download failed: ${state}`);
+      }
+    });
   });
 
   const url = isDev
@@ -30,70 +54,57 @@ app.on('ready', async () => {
         slashes: true,
       });
 
-  // 'openDialog' チャネルに受信
-  ipcMain.handle('openDialog', async () => {
-    const dirpath = await dialog
-      .showOpenDialog(mainWindow, {
-        properties: ['openDirectory'],
-      })
-      .then((result) => {
-        if (result.canceled) return;
-
-        return result.filePaths[0];
-      })
-      .catch((err) => console.log(err));
-
-    if (!dirpath) return;
-
-    return dirpath;
-  });
-
   const fullScreenCapture = async (px: number, url: string) => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setViewport({
-      width: px,
-      height: (await page.evaluate(() => document.body.clientHeight)) + 32,
-      deviceScaleFactor: 2,
-    });
-    await page.goto(url);
-    // await page.waitForTimeout(1000);
+    try {
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+      await page.setViewport({
+        width: px,
+        height: (await page.evaluate(() => document.body.clientHeight)) + 32,
+        deviceScaleFactor: 2,
+      });
+      const response = await page.goto(url);
+      // await page.waitForTimeout(1000);
 
-    const image = await page.screenshot({
-      fullPage: true,
-      // clip: {
-      //   x: 0,
-      //   y: 0,
-      //   width: px,
-      //   height: (await page.evaluate(() => document.body.clientHeight)) + 32,
-      // },
-    });
-    console.log(image);
-
-    await browser.close();
-    return image.toString('base64');
+      const image = await page.screenshot({
+        fullPage: true,
+        // clip: {
+        //   x: 0,
+        //   y: 0,
+        //   width: px,
+        //   height: (await page.evaluate(() => document.body.clientHeight)) + 32,
+        // },
+      });
+      await browser.close();
+      return { image: image.toString('base64'), px: px.toString(), url };
+    } catch (error) {
+      throw error;
+    }
   };
 
   ipcMain.handle('screenShot', async (e, args: SettingListType[number]['setting']) => {
-    console.log(args);
     const { url, size } = args;
-    const buffers: string[] = [];
-    const cluster: Cluster<{ px: number; url: string }> = await Cluster.launch({
-      concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: size.length,
-    });
-    await cluster.task(async ({ page, data: { px, url } }) => {
-      const result = await fullScreenCapture(px, url);
-      buffers.push(result);
-    });
-    await Promise.all(
-      size.map(({ px }) => {
-        cluster.queue({ px: parseInt(px, 10), url: url });
-      })
-    );
-    await cluster.idle();
-    await cluster.close();
-    return buffers;
+    const imageInfo: ImageInfo = [];
+    try {
+      const cluster: Cluster<{ px: number; url: string }> = await Cluster.launch({
+        concurrency: Cluster.CONCURRENCY_CONTEXT,
+        maxConcurrency: size.length,
+      });
+      await cluster.task(async ({ page, data: { px, url } }) => {
+        const result = await fullScreenCapture(px, url);
+        imageInfo.push(result);
+      });
+      await Promise.all(
+        size.map(({ px }) => {
+          cluster.queue({ px: parseInt(px, 10), url: url });
+        })
+      );
+      await cluster.idle();
+      await cluster.close();
+      return imageInfo;
+    } catch (error) {
+      throw error;
+    }
   });
 
   mainWindow.loadURL(url);
