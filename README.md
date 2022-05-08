@@ -1,44 +1,31 @@
-# Electron with Typescript application example
+# auto-screeenshot-next
 
-This example show how you can use Next.js inside an Electron application to avoid a lot of configuration, use Next.js router as view and use server-render to speed up the initial render of the application. Both Next.js and Electron layers are written in TypeScript and compiled to JavaScript during the build process.
+Web 制作現場で見た目の確認を素早くおこなうために開発した、複数サイズのスクリーンショットの撮影&保存を一括でおこなうアプリです。
+撮影条件(px,url など)が保存可能なため毎回入力する必要がありません。
 
-| Part       | Source code (Typescript) | Builds (JavaScript) |
-| ---------- | ------------------------ | ------------------- |
-| Next.js    | `/renderer`              | `/renderer`         |
-| Electron   | `/electron-src`          | `/main`             |
-| Production |                          | `/dist`             |
+| 使用技術 | build 前 (Typescript) | build 後 (JavaScript) |
+| -------- | --------------------- | --------------------- |
+| Next.js  | `/renderer`           | `/renderer`           |
+| Electron | `/electron-src`       | `/main`               |
 
-For development it's going to run a HTTP server and let Next.js handle routing. In production it use `next export` to pre-generate HTML static files and use them in your app instead of running an HTTP server.
+## 使い方
 
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+- ターミナルで以下のコマンドを実行
 
 ```bash
-npx create-next-app --example with-electron-typescript with-electron-typescript-app
-# or
-yarn create next-app --example with-electron-typescript with-electron-typescript-app
-# or
-pnpm create next-app -- --example with-electron-typescript with-electron-typescript-app
+1. yarn install
+2. yarn dev
 ```
 
-Available commands:
+上記コマンド実行後のフローは添付の gif 参照
 
-```bash
-"build-renderer": build and transpile Next.js layer
-"build-electron": transpile electron layer
-"build": build both layers
-"dev": start dev version
-"dist": create production electron build
-"type-check": check TypeScript in project
-```
+![auto-screenshot](https://user-images.githubusercontent.com/49956319/167295546-114899a7-3f60-4a9f-bec0-e23d9a049a72.gif)
 
-## Notes
+## Note
 
-You can create the production app using `npm run dist`.
+画像の保存先はダウンロードディレクトリに固定されています。
 
-_note regarding types:_
+## 未対応部分(今後やりたいこと)
 
-- Electron provides its own type definitions, so you don't need @types/electron installed!
-  source: https://www.npmjs.com/package/@types/electron
-- There were no types available for `electron-next` at the time of creating this example, so until they are available there is a file `electron-next.d.ts` in `electron-src` directory.
+- tsconfig の baseurl 対応
+- 撮影中に表示させるスピナーをプログレスバーに変更(進捗のわかるように)
