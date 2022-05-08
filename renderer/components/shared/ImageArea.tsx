@@ -6,25 +6,26 @@ type ImageAreaProps = {
   imageInfo: ImageInfo;
 };
 
-type DraggableImageProps = ImageAreaProps['imageInfo'][number];
+type DraggableImageProps = ImageAreaProps['imageInfo'][number] & { left: number };
 
 export const ImageArea: React.VFC<ImageAreaProps> = ({ imageInfo }) => {
   return (
-    <Box>
+    <Box position={'relative'}>
       {imageInfo.map((info, i) => (
-        <DraggableImage key={i} {...info} />
+        <DraggableImage key={i} {...info} left={i * 320} />
       ))}
     </Box>
   );
 };
 
-const DraggableImage: React.VFC<DraggableImageProps> = ({ image, px }) => {
+const DraggableImage: React.VFC<DraggableImageProps> = ({ image, px, left }) => {
   const { ref, style } = useInteractJS({ height: 'auto' });
   return (
     <Box
       ref={ref}
       style={{
         ...style,
+        left,
       }}
     >
       <Typography>{px}px</Typography>
