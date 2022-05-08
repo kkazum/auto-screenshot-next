@@ -3,10 +3,10 @@
 Web 制作現場で見た目の確認を素早くおこなうために開発した、複数サイズのスクリーンショットの撮影&保存を一括でおこなうアプリです。
 撮影条件(px,url など)が保存可能なため毎回入力する必要がありません。
 
-| 使用技術 | build 前 (Typescript) | build 後 (JavaScript) |
-| -------- | --------------------- | --------------------- |
-| Next.js  | `/renderer`           | `/renderer`           |
-| Electron | `/electron-src`       | `/main`               |
+| 使用技術 | ディレクトリ (Typescript) | 
+| -------- | ---------------------|
+| Next.js  | `/renderer`          |
+| Electron | `/electron-src`      |
 
 ## 使い方
 
