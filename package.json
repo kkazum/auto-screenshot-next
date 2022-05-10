@@ -3,6 +3,7 @@
   "main": "main/electron-src/index.js",
   "productName": "auto-screenshot-next",
   "scripts": {
+    "test": "vitest --run --reporter verbose --globals",
     "clean": "rimraf dist main renderer/out renderer/.next",
     "dev": "npm run build-electron && electron .",
     "build-renderer": "next build renderer && next export renderer",
@@ -40,7 +41,8 @@
     "next": "latest",
     "prettier": "^2.6.2",
     "rimraf": "^3.0.0",
-    "typescript": "^4.0.5"
+    "typescript": "^4.0.5",
+    "vitest": "^0.12.3"
   },
   "build": {
     "asar": true,
