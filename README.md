@@ -3,10 +3,10 @@
 Web 制作現場で見た目の確認を素早くおこなうために開発した、複数サイズのスクリーンショットの撮影&保存を一括でおこなうアプリです。
 撮影条件(px,url など)が保存可能なため毎回入力する必要がありません。
 
-| 使用技術 | ディレクトリ (Typescript) | 
-| -------- | ---------------------|
-| Next.js  | `/renderer`          |
-| Electron | `/electron-src`      |
+| 使用技術 | ディレクトリ (Typescript) |
+| -------- | ------------------------- |
+| Next.js  | `/renderer`               |
+| Electron | `/electron-src`           |
 
 ## 使い方
 
@@ -19,7 +19,7 @@ Web 制作現場で見た目の確認を素早くおこなうために開発し�
 
 上記コマンド実行後のフローは添付の gif 参照
 
-![auto-screenshot](https://user-images.githubusercontent.com/49956319/167295546-114899a7-3f60-4a9f-bec0-e23d9a049a72.gif)
+![screenshot](https://user-images.githubusercontent.com/49956319/168489017-90f1e70c-d917-43a8-b00b-7d8ebd1ed165.gif)
 
 ## Note
 
@@ -29,3 +29,4 @@ Web 制作現場で見た目の確認を素早くおこなうために開発し�
 
 - tsconfig の baseurl 対応
 - 撮影中に表示させるスピナーをプログレスバーに変更(進捗のわかるように)
+- デザインをカッコ良くする
